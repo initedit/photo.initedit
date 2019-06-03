@@ -1,0 +1,62 @@
+<div>
+  <div (click)="showFullImage()" [ngStyle]="currentStyles" class="img">
+      <div class="mini-options" (click)="$event.stopPropagation()">
+          
+          <!-- <i class="fa fa-trash mr-3" (click)="deletePhoto()"></i> -->
+          <i class="fa fa-download fa-2x p-2" (click)="downloadImage()"></i>
+  
+      </div>
+  </div>
+
+
+
+  <div class="full-screen animated faster" *ngIf="_fullscreen" 
+  [class.zoomIn]="_fullscreen" (window:keyup.esc)="_fullscreen=false" 
+  #fullscreen
+  (click)="hideOnOverlayClick($event)"
+  > 
+    <div class="bg-overlay" (click)="hideOnOverlayClick($event)"></div>
+    <div class="close-btn" (click)="_fullscreen=false">
+        <i class="fa fa-2x fa-arrow-left"></i>
+    </div>
+    <div class="options">
+        <i class="fa fa-info mr-3" (click)="_showInfo=!_showInfo"></i>
+        <i class="fa fa-pencil mr-3" (click)="editPhotoCard()"></i>
+        <i class="fa fa-trash mr-3" (click)="deletePhoto()"></i>
+        <i class="fa fa-download" (click)="downloadImage()"></i>
+
+    </div>
+    <div class="full-image placeholder "  [ngStyle]="fullImageStylesPlaceholder">
+
+    </div>
+    <div class="full-image" [ngStyle]="fullImageStyles" >
+
+    </div>
+    <div class="full-image-text" *ngIf="_showInfo">
+      <div class="mb-1">{{photo.name}}</div>
+      <div class="mb-1">
+        {{photo.created_at | date:'mediumDate'}}
+      </div>  
+      <div class="desc">{{photo.description}}</div> 
+    </div>
+
+    <div class="edit" *ngIf="_isEditing">
+      <div class="edit-right animated faster"  [class.slideInRight]="_isEditing" [class.slideOutRight]="!_isEditing">
+        <div class="alert alert-warning mt-3" [class.slideInUp]="editMessage" *ngIf="editMessage">{{editMessage}}</div>
+        <div class="mt-3">
+            <label class="form-label">Name</label>
+            <input type="text" [(ngModel)]="photo.name" placeholder="type name" class="form-control"/>
+        </div>
+        <div class="mt-3">
+            <label class="form-label">About photo</label>
+            <textarea [(ngModel)]="photo.description" placeholder="type about photo" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="btn-group w-100 mt-3">
+            <button class="btn btn-outline-danger w-50" (click)="_isEditing=false">Close</button>
+            <button class="btn btn-outline-primary w-50" (click)="updatePhoto()">Update</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>

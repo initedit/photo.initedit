@@ -1,0 +1,16 @@
+<div class="home-page" [ngStyle]="fullImageStylesPlaceholder">
+  <div class="input-group mb-3 photo-name">
+      <div class="input-group-append ">
+          <button class="btn btn-primary d-none d-md-block" type="button">https://photo.initedit.com/</button>
+        </div>
+    <input type="text" [(ngModel)]="albumName" (keyup.enter)="gotoAlbum()"  
+    class="form-control photo-name-input" placeholder="type album name" aria-label="Album name"
+    spellcheck="false" autofocus>
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="button" (click)="gotoAlbum()" >Go</button>
+    </div>
+    <a href="//note.initedit.com/ToC#1" class="toc">
+     &copy;2018  Terms & Condition
+      </a>
+  </div>
+</div>

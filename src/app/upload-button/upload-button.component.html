@@ -1,0 +1,27 @@
+<i (click)="showUploadDialog()" [hidden]="isUploading" class="fa fa-upload text-white upload-icon">
+  <input type="file" class="file-upload" *ngIf="!isUploading" (change)="uploadToServer($event)" multiple/>
+</i>
+<img *ngIf="isUploading" class="loading-icon" (click)="toggleUploadProgress=!toggleUploadProgress" src="../../assets/img/loading_2.gif"/>
+<!-- <button *ngIf="isUploading" class="btn btn-danger btn-sm" (click)="toggleUploadProgress=!toggleUploadProgress">Uploading...</button> -->
+<div class="uploadProgressContainer" *ngIf="isUploading && toggleUploadProgress">
+  <div *ngIf="!uploadItems">
+    Nothing Uploading
+  </div>
+  <div *ngIf="uploadItems">
+    <div *ngFor="let item of uploadItems" class="">
+      <div class="upload-item text-truncate">
+       <span class="percentage-visual" [style.width]="item.progress + '%'"></span>
+       <div class="name">{{item.name}}</div> 
+        <span class="percentage">
+          {{item.progress/100 | percent}}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<app-password *ngIf="showPasswordDialog" (IOnClose)="onPasswordClosed($event)"></app-password>
+<div class="upload-placeholder" *ngIf="dropzoneHovered">
+  <div class="drop-message animated faster bg-primary" [class.slideInUp]="dropzoneHovered">
+    Drop your files to upload
+  </div>
+</div>

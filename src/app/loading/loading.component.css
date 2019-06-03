@@ -1,0 +1,13 @@
+.loading{
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        width: 100px;
+        text-align: center;
+        margin-left: -50px;
+        background-color: rgba(0,0,0,0.8);
+        color: #FFF;
+        padding: 10px 15px;
+        border-radius: 3px;
+        z-index: 100;
+}
