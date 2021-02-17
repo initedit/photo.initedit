@@ -22,10 +22,17 @@ export class PhotoService {
   static getHeaders(name:string):any{
     var currentUser = JSON.parse(localStorage.getItem('currentSession'));
     if(!currentUser)
-      currentUser = {token:""};
+      currentUser = {token:"",name:name};
+    if(name==currentUser.name){
+      return {
+        headers: new HttpHeaders(
+          { 'name':name,'token':currentUser.token}
+        )
+      };
+    }
     return {
       headers: new HttpHeaders(
-        { 'name':name,'token':currentUser.token}
+        { 'name':name,'token':""}
       )
     };
   }

@@ -51,7 +51,7 @@ export class PhotoUploadService {
       this.http.post<SinglePhotoBaseResponse>
       (PhotoService.getAPIPath("/photo/upload"),formData,httpOptions)
       .subscribe( (event: HttpEvent<SinglePhotoBaseResponse>) => {
-        console.log(event);
+        
         switch (event.type) {
           case HttpEventType.Sent:
             photoUpload.IS_STARTED=true;

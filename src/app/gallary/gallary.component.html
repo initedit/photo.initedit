@@ -8,6 +8,7 @@
     <a routerLink="/" class="mt-1 ml-1 brand-link">
        Initedit Photo
     </a>
+    <i class="fa fa-lock app-lock-btn" (click)="handleLocking()"></i>
     <app-upload-button class="upload-button" (ICallback)="uploadUpdate($event)" (IMessage)="sendMessage($event)"></app-upload-button>
     <div class="error-message bg-alert" [hidden]="!errorMessage">{{errorMessage}}</div>
   </div>

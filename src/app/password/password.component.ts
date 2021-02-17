@@ -3,7 +3,8 @@ import { Location } from '@angular/common';
 import { PhotoService } from '../photo.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TokenBaseResponse } from '../model/TokenBaseResponse';
-
+import passwordHash from '../../../node_modules/password-hash';
+//declare var require:any;
 
 @Component({
   selector: 'app-password',
@@ -15,12 +16,12 @@ export class PasswordComponent implements OnInit {
   password:string;
   name:string;
   isPasswordVisible:boolean=true;
-  isCreated:boolean=false;
-  _passwordType:string="text";
+  isCreated:boolean=true;
+  _passwordType:string="password";
   selectedType:string="2";
   _message:string="";
   _initAuth:boolean=true;  
-  constructor(private _route:ActivatedRoute,private _location: Location,private _service:PhotoService) { }
+  constructor(private _route:ActivatedRoute,private _service:PhotoService) { }
 
   ngOnInit() {
     this.name=this._route.snapshot.url[0].path;
@@ -31,13 +32,12 @@ export class PasswordComponent implements OnInit {
   init(){
     this._service.info(this.name)
     .subscribe(info=>{
-      console.log(info)
       if(info.code===404)
       {
         this.isCreated=false;
       }else if(info.code===200){
         this.isCreated=true;
-        this._passwordType="text";
+        this._passwordType="password";
         switch(info.type)
         {
           case "Public":this.selectedType="1";break;
@@ -51,7 +51,6 @@ export class PasswordComponent implements OnInit {
           this._passwordType="password";
         }
         this.authenticate();
-
       }
     });
   }
@@ -88,12 +87,14 @@ export class PasswordComponent implements OnInit {
     });
   }
   getPasswordFromUI(){
-    var passwordHash = require('password-hash');
-    var hashedPassword = passwordHash.generate(this.password);
-    return hashedPassword;
+    
+    if(this.password!=undefined){
+      var hashedPassword = this.password;
+      return hashedPassword;
+    }
+    return "";
   }
   saveToken(name,tokenBaseResponse:TokenBaseResponse){
-    console.log(tokenBaseResponse,name,"SaveToken")
     localStorage.setItem('currentSession', JSON.stringify({ token: tokenBaseResponse.token, name: name }));
     this.hideModel(true);
   }

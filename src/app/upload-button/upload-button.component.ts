@@ -74,7 +74,7 @@ export class UploadButtonComponent implements OnInit,IPhotoUploadLifeCycle {
   }
 
   handleSuccessUpload(response:SinglePhotoBaseResponse){
-      console.log("Success Called",response);
+      
   }
   
   onPasswordClosed(isSuccess:boolean){
@@ -84,10 +84,10 @@ export class UploadButtonComponent implements OnInit,IPhotoUploadLifeCycle {
         if(this._uploadRetry){
           this._uploadService.retry(this._uploadRetry)
           this._uploadRetry=null;
-          console.log("Uploading with Retry");
+          
         }else{
           this.uploadToServer(this._lastEvnt);
-          console.log("Uploading with Last Event");
+          
         }
       }
   }

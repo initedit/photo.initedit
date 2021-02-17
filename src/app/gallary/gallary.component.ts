@@ -12,7 +12,9 @@ import { NgxMasonryComponent } from 'ngx-masonry';
   templateUrl: './gallary.component.html',
   styleUrls: [
     './gallary.component.css',
-    '../../../node_modules/ng-masonry-grid/ng-masonry-grid.css'
+    '../../../node_modules/ng-masonry-grid/ng-masonry-grid.css',
+    "../../../node_modules/font-awesome/css/font-awesome.css",
+    '../../../node_modules/animate.css/animate.css'
   ]
 })
 export class GallaryComponent implements OnInit {
@@ -23,6 +25,7 @@ export class GallaryComponent implements OnInit {
   _page:number=1;
   _loading:boolean=false;
   _isAllPhotoLoaded:boolean=false;
+  photoResponse:PhotoBaseResponse;
   
   dropzoneHovered:boolean=false;
   @ViewChild(UploadButtonComponent)
@@ -55,6 +58,17 @@ export class GallaryComponent implements OnInit {
     this.photos.length=0;
     this.load();
   }
+
+  handleLocking(){
+    if(this.photoResponse){
+      if(this.showPasswordScreen){
+        this.showPasswordScreen = false;
+      }else{
+        this.showPasswordScreen = true;
+      }
+    }
+  }
+
   load(){
 
     document.title = this.name + " - "+ AppComponent.title;
@@ -62,8 +76,10 @@ export class GallaryComponent implements OnInit {
     this.photoService.getPhoto(this.name,this._page)
     .subscribe((photoResponse:PhotoBaseResponse)=>{
       this.isError=false;
+      this.photoResponse = photoResponse;
       if(photoResponse.code==401){
         this.showPasswordScreen=true;
+        
       }else if(photoResponse.code==404){
         this.showPasswordScreen=false;
       }else{
@@ -94,14 +110,13 @@ export class GallaryComponent implements OnInit {
   uploadUpdate(result:Photo){
     if(result){
       this.photos.unshift(result);
-      console.log("PHOTOS",this.photos);
       this.masonry.reloadItems();
       if(this.isEmpty)
         this.refreshFeed();
     }
   }
   removeItem(evnt:any){
-    console.log(evnt);
+   
   }
   onScroll(){
     if(this._isAllPhotoLoaded)
@@ -129,7 +144,6 @@ export class GallaryComponent implements OnInit {
     if(IsFile){
       this.uploadButtonComponent.dropzoneHovered = true;
     }
-    console.log(IsFile);
   }
   checkIfFileHoveredOnLeave(e){
     --this.dragCounter;
@@ -153,15 +167,7 @@ export class GallaryComponent implements OnInit {
   }
 
   isDragSourceExternalFile(dataTransfer){
-    // Source detection for Safari v5.1.7 on Windows.
-    // if (typeof Clipboard != 'undefined') {
-    //     if (dataTransfer.constructor == Clipboard) {
-    //         if (dataTransfer.files.length > 0)
-    //             return true;
-    //         else
-    //             return false;
-    //     }
-    // }
+    
 
     // Source detection for Firefox on Windows.
     if (typeof DOMStringList != 'undefined'){

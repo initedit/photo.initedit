@@ -65,7 +65,6 @@ export class PhotoCardComponent implements OnInit {
     this._isDeleting = true;
     this.service.deletePhoto(this.photo)
     .subscribe(response=>{
-      console.log(response);
       if(response.code==200)
       {
         this._fullscreen=false;
@@ -86,7 +85,6 @@ export class PhotoCardComponent implements OnInit {
     var albumName = this.service.getActiveAlbum();
     this.service.update(albumName,this.photo.id.toString(),this.photo.name,this.photo.description,this.photo.tags,this.photo.extra)
     .subscribe(response=>{
-      console.log(response);
       if(response.code==200)
       {
         
@@ -96,7 +94,6 @@ export class PhotoCardComponent implements OnInit {
   }
 
   hideOnOverlayClick(event){
-    console.log("Hide Called",event);
   }
   
 }

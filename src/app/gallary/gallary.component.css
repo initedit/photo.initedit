@@ -78,6 +78,14 @@
 .masonry-item{
         margin-bottom: 10px;
 }
+.app-lock-btn{
+        position: absolute;
+        right: 55px;
+        top: 12px;
+        padding: 6px;
+        color: white;
+}
+
 /* 1 columns by default */
 .grid-sizer { width: calc(100% - 10px); }
 
