@@ -22,11 +22,11 @@
   </div>
   <div *ngIf="photos" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
     <ngx-masonry [options]="ngxMasonaryOption" [updateLayout]='updateMasonryLayout' class="pl-1">
-      <ngxMasonryItem *ngFor="let photo of photos; let i = index">
-        <app-photo-card class="masonry-item grid-item grid-sizer" [photo]="photo" [albumName]='name'
+      <div ngxMasonryItem *ngFor="let photo of photos; let i = index"  class="masonry-item grid-item grid-sizer">
+        <app-photo-card [photo]="photo" [albumName]='name'
           (OnDeleted)="OnPhotoDeleted($event)">
         </app-photo-card>
-      </ngxMasonryItem>
+      </div>
     </ngx-masonry>
   </div>
   <h4 *ngIf="isEmpty" class="text-center empty">Its Empty.</h4>

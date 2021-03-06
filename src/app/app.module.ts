@@ -2,11 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule }    from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { NgMasonryGridModule } from 'ng-masonry-grid';
+// import { NgMasonryGridModule } from 'ng-masonry-grid';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
+// import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -31,12 +32,13 @@ import { LoadingComponent } from './loading/loading.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    NgMasonryGridModule,
+    // NgMasonryGridModule,
     NgxMasonryModule,
     InfiniteScrollModule,
-    AngularFontAwesomeModule,
+    // AngularFontAwesomeModule,
     AppRoutingModule,
   ],
   providers: [],

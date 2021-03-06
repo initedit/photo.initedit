@@ -52,7 +52,7 @@ export class GallaryComponent implements OnInit {
     columnWidth: '.grid-sizer',
     itemSelector: '.grid-item',
     resize: true,
-    initLayout:true,
+    // fitWidth:true,
   };
 
   constructor(private route: ActivatedRoute, private photoService: PhotoService, private resolver: ComponentFactoryResolver) { }
@@ -164,13 +164,14 @@ export class GallaryComponent implements OnInit {
   updateMasonryLayout:string
   uploadUpdate(result: Photo) {
     if (result) {
-      let newArr = [result]
-      // this.photos.unshift(result);
+      // let newArr = [result]
+      this.photos.unshift(result);
       // this.masonry.reloadItems();
       // this.masonry.layout();
-      this.photos = newArr.concat(this.photos);
-      // setTimeout(() => this.masonry._msnry.reloadItems())
+      // this.photos = newArr.concat(this.photos);
       this.updateMasonryLayout = Date.now().toString();
+      this.masonry.reloadItems();
+      this.masonry.layout();
       if (this.isEmpty)
         this.refreshFeed();
     }
