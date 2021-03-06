@@ -10,95 +10,95 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class PhotoService {
-  static baseAPI:string = environment.apiEndpoint;
-  constructor( private http: HttpClient) { }
+  static baseAPI: string = environment.apiEndpoint;
+  constructor(private http: HttpClient) { }
 
-  static getAPIPath(url:string):string{
-    return PhotoService.baseAPI+url;
+  static getAPIPath(url: string): string {
+    return PhotoService.baseAPI + url;
   }
-  static getHeaders(name:string):any{
+  static getHeaders(name: string): any {
     var currentUser = JSON.parse(localStorage.getItem('currentSession'));
-    if(!currentUser)
-      currentUser = {token:"",name:name};
-    if(name==currentUser.name){
+    if (!currentUser)
+      currentUser = { token: "", name: name };
+    if (name == currentUser.name) {
       return {
         headers: new HttpHeaders(
-          { 'name':name,'token':currentUser.token}
+          { 'name': name, 'token': currentUser.token }
         )
       };
     }
     return {
       headers: new HttpHeaders(
-        { 'name':name,'token':""}
+        { 'name': name, 'token': "" }
       )
     };
   }
 
 
 
-  getActiveAlbum(){
+  getActiveAlbum(): string {
     var currentUser = JSON.parse(localStorage.getItem('currentSession'));
     return currentUser && currentUser.name;
   }
-  getActiveToken(){
+  getActiveToken(): string {
     var currentUser = JSON.parse(localStorage.getItem('currentSession'));
     return currentUser && currentUser.token;
   }
 
-  getPhoto(name:string,page:Number):Observable<PhotoBaseResponse>{
+  getPhoto(name: string, page: Number): Observable<PhotoBaseResponse> {
     const httpOptions = PhotoService.getHeaders(name);
     const body = {
-      page:page,
+      page: page,
     }
-    return this.http.post<PhotoBaseResponse>(PhotoService.getAPIPath("/photo/get"),body,{headers:httpOptions.headers});
+    return this.http.post<PhotoBaseResponse>(PhotoService.getAPIPath("/photo/get"), body, { headers: httpOptions.headers });
   }
 
-  validate(name:string,token:string):Observable<TokenBaseResponse>{
+  validate(name: string, token: string): Observable<TokenBaseResponse> {
     const body = {
-      name:name,
-      token:token
+      name: name,
+      token: token
     }
-    return this.http.post<TokenBaseResponse>(PhotoService.getAPIPath("/account/auth"),body);
+    return this.http.post<TokenBaseResponse>(PhotoService.getAPIPath("/account/auth"), body);
   }
 
-  update(albumName:string,id:string,name:string,description:string,tags:string,extra:string):Observable<SinglePhotoBaseResponse>{
+  update(albumName: string, id: string, name: string, description: string, tags: string, extra: string): Observable<SinglePhotoBaseResponse> {
 
-    let formData:FormData = new FormData();
-    formData.append("id",id);
-    formData.append("name",name);
-    formData.append("description",description);
-    formData.append("tags",tags);
-    formData.append("extra",extra);
+    let formData: FormData = new FormData();
+    formData.append("id", id);
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("tags", tags);
+    formData.append("extra", extra);
 
     let httpOptions = PhotoService.getHeaders(albumName);
 
-    return this.http.post<SinglePhotoBaseResponse>(PhotoService.getAPIPath("/photo/update"),formData,{headers:httpOptions.headers});
+    return this.http.post<SinglePhotoBaseResponse>(PhotoService.getAPIPath("/photo/update"), formData, { headers: httpOptions.headers });
   }
 
-  info(name:string):Observable<any>{
+  info(name: string): Observable<any> {
     const body = {
       name
     }
-    return this.http.post(PhotoService.getAPIPath("/account/info"),body);
+    return this.http.post(PhotoService.getAPIPath("/account/info"), body);
   }
-  create(name:string,token:string,type:string):Observable<TokenBaseResponse>{
+  create(name: string, token: string, type: string): Observable<TokenBaseResponse> {
     const body = {
       name,
       token,
       type
     }
-    return this.http.post<TokenBaseResponse>(PhotoService.getAPIPath("/account/create"),body);
+    return this.http.post<TokenBaseResponse>(PhotoService.getAPIPath("/account/create"), body);
   }
-  downloadPhoto(photo:Photo){
-    window.open(PhotoService.getAPIPath("/photo/download?id="+photo.id+"&token="+this.getActiveToken()));
+  downloadPhoto(photo: Photo) {
+    window.open(PhotoService.getAPIPath("/photo/download?id=" + photo.id + "&token=" + this.getActiveToken()));
   }
-  deletePhoto(photo:Photo):Observable<PhotoBaseResponse>{
+  deletePhoto(photo: Photo): Observable<PhotoBaseResponse> {
     let name = this.getActiveAlbum();
     const httpOptions = PhotoService.getHeaders(name);
     const body = {
-      id:photo.id
+      id: photo.id
     }
-    return this.http.post<PhotoBaseResponse>(PhotoService.getAPIPath("/photo/delete"),body,{headers:httpOptions.headers});
+    return this.http.post<PhotoBaseResponse>(PhotoService.getAPIPath("/photo/delete"), body, { headers: httpOptions.headers });
   }
 
 }

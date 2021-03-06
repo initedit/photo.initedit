@@ -1,58 +1,41 @@
-<div [class.isEmpty]="isEmpty"
-(dragenter)="checkIfFileHovered($event)" (dragleave)="checkIfFileHoveredOnLeave($event)"
-(drop)="dragFileDroped($event)"
-(dragover)="allowDrop($event)"
->
+<div [class.isEmpty]="isEmpty" (dragenter)="checkIfFileHovered($event)" (dragleave)="checkIfFileHoveredOnLeave($event)"
+  (drop)="dragFileDroped($event)" (dragover)="allowDrop($event)">
   <div class="header bg-primary">
     <!-- <a routerLink="/" class="btn btn-warning text-black mt-1 ml-1 brand-name">IP</a> -->
     <a routerLink="/" class="mt-1 ml-1 brand-link">
-       Initedit Photo
+      Initedit Photo
     </a>
     <i class="fa fa-lock app-lock-btn" (click)="handleLocking()"></i>
-    <app-upload-button class="upload-button" (ICallback)="uploadUpdate($event)" (IMessage)="sendMessage($event)"></app-upload-button>
+    <app-upload-button class="upload-button" (ICallback)="uploadUpdate($event)" (IMessage)="sendMessage($event)">
+    </app-upload-button>
     <div class="error-message bg-alert" [hidden]="!errorMessage">{{errorMessage}}</div>
   </div>
   <h2 class="text-center mb-3 mt-5">
-    <span class="album-name">  {{name|uppercase}}</span>
+    <span class="album-name"> {{name|uppercase}}</span>
   </h2>
   <app-loading *ngIf="_loading"></app-loading>
   <div *ngIf="showPasswordScreen">
-  <app-password (IOnClose)="onPasswordClosed($event)"></app-password>
+    <app-password (IOnClose)="onPasswordClosed($event)"></app-password>
   </div>
-  <div *ngIf="photos" infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      (scrolled)="onScroll()">
-      <ngx-masonry [options]="{ 
+  <div *ngIf="photos" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
+    <ngx-masonry [options]="{
         transitionDuration: '0.0s',
-      gutter: 10, 
+      gutter: 10,
       horizontalOrder: true,
       percentPosition: true,
       columnWidth: '.grid-sizer',
       itemSelector: '.grid-item',
       resize:true
-    }"
-      [useImagesLoaded]="true"
-       class="pl-1">
-       <!-- <ngx-masonry [options]="{ 
-        transitionDuration: '0.8s',
-      gutter: 10, 
-      horizontalOrder: true,
-      percentPosition: true,
-      columnWidth: '.grid-sizer',
-      itemSelector: '.grid-item',
-      resize:true
-    }"
-      [useImagesLoaded]="true"
-       class="pl-1"> -->
-        <ngxMasonryItem  *ngFor="let photo of photos; let i = index">
-          <app-photo-card class="masonry-item grid-item grid-sizer" [photo]="photo" (OnDeleted)="OnPhotoDeleted($event)"></app-photo-card>
-       </ngxMasonryItem>
-      </ngx-masonry>
+    }" [useImagesLoaded]="true" class="pl-1">
+      <ngxMasonryItem *ngFor="let photo of photos; let i = index">
+        <app-photo-card class="masonry-item grid-item grid-sizer" [photo]="photo" (OnDeleted)="OnPhotoDeleted($event)">
+        </app-photo-card>
+      </ngxMasonryItem>
+    </ngx-masonry>
   </div>
   <h4 *ngIf="isEmpty" class="text-center empty">Its Empty.</h4>
   <h4 *ngIf="isError" class="text-center empty bg-danger text-white p-5">
-    Its Error.<br/>
+    Its Error.<br />
     <small>{{errorMessage}}</small>
   </h4>
   <h4 *ngIf="_isAllPhotoLoaded" class="last-page-message mt-2 mb-0 py-2">
