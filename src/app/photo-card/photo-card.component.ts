@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output,EventEmitter } from '@angular/core';
+import { AlbumInfoResponse } from '../model/AlbumResponse';
 import { Photo } from '../model/Photo';
 import { PhotoService } from '../photo.service';
 
@@ -12,6 +13,7 @@ import { PhotoService } from '../photo.service';
 })
 export class PhotoCardComponent implements OnInit {
   @Input() photo:Photo;
+  @Input() albumName:string;
   @Output() OnDeleted = new EventEmitter<Photo>();
   currentStyles={
     backgroundImage:"",
@@ -28,7 +30,7 @@ export class PhotoCardComponent implements OnInit {
   _showInfo:boolean=false;
   _isDeleting: boolean;
 
-  
+
   constructor(private service:PhotoService) { }
 
   ngOnInit() {
@@ -36,10 +38,10 @@ export class PhotoCardComponent implements OnInit {
     let ratio = this.photo.height/this.photo.width;
     let w = (window.screen.availWidth - (10*this._perRow))/this._perRow;
     let h = w*ratio;
-    
+
     this.currentStyles.backgroundImage="url('"+ this.photo.path.thumb +"')";
     this.currentStyles.height=h+"px";
-    
+
   }
 
   setup(){
@@ -63,7 +65,7 @@ export class PhotoCardComponent implements OnInit {
   }
   deletePhoto(){
     this._isDeleting = true;
-    this.service.deletePhoto(this.photo)
+    this.service.deletePhoto(this.albumName, this.photo)
     .subscribe(response=>{
       if(response.code==200)
       {
@@ -73,21 +75,22 @@ export class PhotoCardComponent implements OnInit {
           this.OnDeleted.emit(this.photo);
         }
       }
-      this._isDeleting = false;
     },error=>{
+      console.log(error);
+    },()=>{
       this._isDeleting = false;
+
     });
   }
   editPhotoCard(){
     this._isEditing=true;
   }
   updatePhoto(){
-    var albumName = this.service.getActiveAlbum();
-    this.service.update(albumName,this.photo.id.toString(),this.photo.name,this.photo.description,this.photo.tags,this.photo.extra)
+    this.service.update(this.albumName,this.photo.id.toString(),this.photo.name,this.photo.description,this.photo.tags,this.photo.extra)
     .subscribe(response=>{
       if(response.code==200)
       {
-        
+
       }
       this.editMessage=response.message;
     });
@@ -95,5 +98,5 @@ export class PhotoCardComponent implements OnInit {
 
   hideOnOverlayClick(event){
   }
-  
+
 }

@@ -1,11 +1,13 @@
 <div [class.isEmpty]="isEmpty" (dragenter)="checkIfFileHovered($event)" (dragleave)="checkIfFileHoveredOnLeave($event)"
   (drop)="dragFileDroped($event)" (dragover)="allowDrop($event)">
   <div class="header bg-primary">
-    <!-- <a routerLink="/" class="btn btn-warning text-black mt-1 ml-1 brand-name">IP</a> -->
     <a routerLink="/" class="mt-1 ml-1 brand-link">
       Initedit Photo
     </a>
-    <i class="fa fa-lock app-lock-btn" (click)="handleLocking()"></i>
+    <i class="fa fa-lock app-lock-btn" *ngIf="isLocked && canEdit==false" (click)="handleLocking()"></i>
+    <i class="fa fa-unlock-alt app-lock-btn" *ngIf='isLocked && canEdit' (click)="lockCurrentAlbum()"></i>
+    <i class="fa fa-unlock app-lock-btn" *ngIf='isCreated==false &&  isLocked==false' (click)="handleLocking()"></i>
+
     <app-upload-button class="upload-button" (ICallback)="uploadUpdate($event)" (IMessage)="sendMessage($event)">
     </app-upload-button>
     <div class="error-message bg-alert" [hidden]="!errorMessage">{{errorMessage}}</div>
@@ -15,7 +17,7 @@
   </h2>
   <app-loading *ngIf="_loading"></app-loading>
   <div *ngIf="showPasswordScreen">
-    <app-password (IOnClose)="onPasswordClosed($event)"></app-password>
+    <app-password (IOnClose)="onPasswordClosed($event)" [albumInfo]="albumInfo"></app-password>
   </div>
   <div *ngIf="photos" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
     <ngx-masonry [options]="{
@@ -28,7 +30,8 @@
       resize:true
     }" [useImagesLoaded]="true" class="pl-1">
       <ngxMasonryItem *ngFor="let photo of photos; let i = index">
-        <app-photo-card class="masonry-item grid-item grid-sizer" [photo]="photo" (OnDeleted)="OnPhotoDeleted($event)">
+        <app-photo-card class="masonry-item grid-item grid-sizer" [photo]="photo" [albumName]='name'
+          (OnDeleted)="OnPhotoDeleted($event)">
         </app-photo-card>
       </ngxMasonryItem>
     </ngx-masonry>

@@ -6,6 +6,7 @@ import { TokenBaseResponse } from './model/TokenBaseResponse';
 import { SinglePhotoBaseResponse } from './model/SinglePhotoBaseResponse';
 import { Photo } from './model/Photo';
 import { environment } from 'src/environments/environment';
+import { AlbumInfoResponse } from './model/AlbumResponse';
 @Injectable({
   providedIn: 'root'
 })
@@ -18,19 +19,18 @@ export class PhotoService {
   }
   static getHeaders(name: string): any {
     var currentUser = JSON.parse(localStorage.getItem('currentSession'));
-    if (!currentUser)
+    if (!currentUser) {
       currentUser = { token: "", name: name };
+    }
+    let httpHeaders: HttpHeaders = new HttpHeaders();
+    httpHeaders = httpHeaders.append('name', name);
     if (name == currentUser.name) {
-      return {
-        headers: new HttpHeaders(
-          { 'name': name, 'token': currentUser.token }
-        )
-      };
+      httpHeaders = httpHeaders.append('token', currentUser.token);
+    } else {
+      httpHeaders = httpHeaders.append('token', '');
     }
     return {
-      headers: new HttpHeaders(
-        { 'name': name, 'token': "" }
-      )
+      headers: httpHeaders
     };
   }
 
@@ -43,6 +43,10 @@ export class PhotoService {
   getActiveToken(): string {
     var currentUser = JSON.parse(localStorage.getItem('currentSession'));
     return currentUser && currentUser.token;
+  }
+  removeActiveToken(): boolean {
+    localStorage.removeItem('currentSession');
+    return true;
   }
 
   getPhoto(name: string, page: Number): Observable<PhotoBaseResponse> {
@@ -75,11 +79,11 @@ export class PhotoService {
     return this.http.post<SinglePhotoBaseResponse>(PhotoService.getAPIPath("/photo/update"), formData, { headers: httpOptions.headers });
   }
 
-  info(name: string): Observable<any> {
+  info(name: string): Observable<AlbumInfoResponse> {
     const body = {
       name
     }
-    return this.http.post(PhotoService.getAPIPath("/account/info"), body);
+    return this.http.post<AlbumInfoResponse>(PhotoService.getAPIPath("/account/info"), body);
   }
   create(name: string, token: string, type: string): Observable<TokenBaseResponse> {
     const body = {
@@ -92,8 +96,8 @@ export class PhotoService {
   downloadPhoto(photo: Photo) {
     window.open(PhotoService.getAPIPath("/photo/download?id=" + photo.id + "&token=" + this.getActiveToken()));
   }
-  deletePhoto(photo: Photo): Observable<PhotoBaseResponse> {
-    let name = this.getActiveAlbum();
+  deletePhoto(albumName: string, photo: Photo): Observable<PhotoBaseResponse> {
+    let name = albumName;
     const httpOptions = PhotoService.getHeaders(name);
     const body = {
       id: photo.id

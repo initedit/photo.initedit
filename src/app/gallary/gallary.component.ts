@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, HostListener, ComponentFactoryResolver } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PhotoService } from '../photo.service';
 import { Photo } from '../model/Photo';
@@ -6,6 +6,8 @@ import { UploadButtonComponent } from '../upload-button/upload-button.component'
 import { AppComponent } from '../app.component';
 import { PhotoBaseResponse } from '../model/PhotoBaseResponse';
 import { NgxMasonryComponent } from 'ngx-masonry';
+import { AlbumInfoResponse } from '../model/AlbumResponse';
+import { PasswordComponent } from '../password/password.component';
 
 @Component({
   selector: 'app-gallary',
@@ -26,21 +28,27 @@ export class GallaryComponent implements OnInit {
   _loading: boolean = false;
   _isAllPhotoLoaded: boolean = false;
   photoResponse: PhotoBaseResponse;
-  isUnlocked: boolean = false;
+  isLocked: boolean = false;
+  canEdit: boolean = false;
+  isCreated: boolean = false;
+  albumInfo: AlbumInfoResponse;
 
   dropzoneHovered: boolean = false;
   @ViewChild(UploadButtonComponent)
   private uploadButtonComponent: UploadButtonComponent;
+
+  @ViewChild(PasswordComponent)
+  private passwordComoponent: PasswordComponent;
   isError: boolean = false;
   errorMessage: any;
   @ViewChild(NgxMasonryComponent)
   private masonry: NgxMasonryComponent;
 
-  constructor(private route: ActivatedRoute, private photoService: PhotoService) { }
+  constructor(private route: ActivatedRoute, private photoService: PhotoService, private resolver: ComponentFactoryResolver) { }
 
   ngOnInit() {
     this.name = this.route.snapshot.paramMap.get('name');
-    this.refreshFeed();
+    this.loadAlbumInfo(true);
   }
   @HostListener("document:paste", ["$event"])
   onPasteContent(event) {
@@ -50,6 +58,35 @@ export class GallaryComponent implements OnInit {
       if (item.kind === 'file') {
         var blob = item.getAsFile();
         this.uploadButtonComponent.addFilesForUpload([blob]);
+      }
+    }
+  }
+
+  loadAlbumInfo(shouldRefresh: boolean) {
+    this.photoService.info(this.name)
+      .subscribe(info => {
+        this.albumInfo = info;
+        this.calculateFlags();
+        //Handle 404
+        if (shouldRefresh) {
+          this.refreshFeed();
+        }
+      });
+  }
+
+  calculateFlags() {
+    //TODO:: Show Password Dialog if Note is Private;
+    if (this.albumInfo.type) {
+      let albumType = this.albumInfo.type.toLowerCase();
+      this.isLocked = albumType == 'public' ? false : true;
+      this.canEdit = this.isLocked == true ? (this.name == this.photoService.getActiveAlbum()) : true;
+      if (this.canEdit == false && albumType == 'private') {
+        //TODO:: Show Password Dialog
+      }
+      if (this.albumInfo.code == 404) {
+        this.isCreated = false;
+      } else {
+        this.isCreated = true;
       }
     }
   }
@@ -84,7 +121,6 @@ export class GallaryComponent implements OnInit {
         } else if (photoResponse.code == 404) {
           this.showPasswordScreen = false;
         } else {
-          this.isUnlocked = this.name == this.photoService.getActiveAlbum();
           this.showPasswordScreen = false;
           this.photos = this.photos.concat(photoResponse.result);
 
@@ -105,8 +141,14 @@ export class GallaryComponent implements OnInit {
         });
   }
 
+  lockCurrentAlbum() {
+    this.photoService.removeActiveToken();
+    this.calculateFlags();
+  }
+
   onPasswordClosed(isClosed: boolean) {
     this.showPasswordScreen = false;
+    this.loadAlbumInfo(false);
   }
   uploadUpdate(result: Photo) {
     if (result) {
