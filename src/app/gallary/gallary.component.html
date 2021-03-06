@@ -8,7 +8,8 @@
     <i class="fa fa-unlock-alt app-lock-btn" *ngIf='isLocked && canEdit' (click)="lockCurrentAlbum()"></i>
     <i class="fa fa-unlock app-lock-btn" *ngIf='isCreated==false &&  isLocked==false' (click)="handleLocking()"></i>
 
-    <app-upload-button class="upload-button" (ICallback)="uploadUpdate($event)" (IMessage)="sendMessage($event)">
+    <app-upload-button class="upload-button" [albumName]='name' (ICallback)="uploadUpdate($event)"
+      (IMessage)="sendMessage($event)">
     </app-upload-button>
     <div class="error-message bg-alert" [hidden]="!errorMessage">{{errorMessage}}</div>
   </div>
@@ -20,15 +21,7 @@
     <app-password (IOnClose)="onPasswordClosed($event)" [albumInfo]="albumInfo"></app-password>
   </div>
   <div *ngIf="photos" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
-    <ngx-masonry [options]="{
-        transitionDuration: '0.0s',
-      gutter: 10,
-      horizontalOrder: true,
-      percentPosition: true,
-      columnWidth: '.grid-sizer',
-      itemSelector: '.grid-item',
-      resize:true
-    }" [useImagesLoaded]="true" class="pl-1">
+    <ngx-masonry [options]="ngxMasonaryOption" [updateLayout]='updateMasonryLayout' class="pl-1">
       <ngxMasonryItem *ngFor="let photo of photos; let i = index">
         <app-photo-card class="masonry-item grid-item grid-sizer" [photo]="photo" [albumName]='name'
           (OnDeleted)="OnPhotoDeleted($event)">

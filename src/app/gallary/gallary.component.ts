@@ -5,7 +5,7 @@ import { Photo } from '../model/Photo';
 import { UploadButtonComponent } from '../upload-button/upload-button.component';
 import { AppComponent } from '../app.component';
 import { PhotoBaseResponse } from '../model/PhotoBaseResponse';
-import { NgxMasonryComponent } from 'ngx-masonry';
+import { NgxMasonryComponent, NgxMasonryOptions } from 'ngx-masonry';
 import { AlbumInfoResponse } from '../model/AlbumResponse';
 import { PasswordComponent } from '../password/password.component';
 
@@ -43,6 +43,17 @@ export class GallaryComponent implements OnInit {
   errorMessage: any;
   @ViewChild(NgxMasonryComponent)
   private masonry: NgxMasonryComponent;
+
+  ngxMasonaryOption: NgxMasonryOptions = {
+    // transitionDuration: '0.0s',
+    gutter: 10,
+    horizontalOrder: true,
+    percentPosition: true,
+    columnWidth: '.grid-sizer',
+    itemSelector: '.grid-item',
+    resize: true,
+    initLayout:true,
+  };
 
   constructor(private route: ActivatedRoute, private photoService: PhotoService, private resolver: ComponentFactoryResolver) { }
 
@@ -150,10 +161,16 @@ export class GallaryComponent implements OnInit {
     this.showPasswordScreen = false;
     this.loadAlbumInfo(false);
   }
+  updateMasonryLayout:string
   uploadUpdate(result: Photo) {
     if (result) {
-      this.photos.unshift(result);
-      this.masonry.reloadItems();
+      let newArr = [result]
+      // this.photos.unshift(result);
+      // this.masonry.reloadItems();
+      // this.masonry.layout();
+      this.photos = newArr.concat(this.photos);
+      // setTimeout(() => this.masonry._msnry.reloadItems())
+      this.updateMasonryLayout = Date.now().toString();
       if (this.isEmpty)
         this.refreshFeed();
     }
