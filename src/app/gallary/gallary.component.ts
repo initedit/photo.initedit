@@ -158,16 +158,10 @@ export class GallaryComponent implements OnInit {
     this.showPasswordScreen = false;
     this.loadAlbumInfo(false);
   }
-  updateMasonryLayout:string
   uploadUpdate(result: Photo) {
     if (result) {
-      // let newArr = [result]
+      result.prepend=true;
       this.photos.unshift(result);
-      // this.masonry.reloadItems();
-      // this.masonry.layout();
-      // this.photos = newArr.concat(this.photos);
-      this.updateMasonryLayout = Date.now().toString();
-      this.masonry.reloadItems();
       this.masonry.layout();
       if (this.isEmpty)
         this.refreshFeed();
@@ -191,6 +185,8 @@ export class GallaryComponent implements OnInit {
     if (this.photos.length == 0) {
       this.isEmpty = true;
     }
+    this.masonry.reloadItems();
+    this.masonry.layout();
 
     this.onScroll();
   }

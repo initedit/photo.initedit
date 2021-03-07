@@ -80,7 +80,7 @@ export class PhotoDetailComponent implements OnInit {
     this.service.deletePhoto(this.albumName, this.photo)
       .subscribe(response => {
         if (response.code == 200) {
-          this.dialogRef.close(response);
+          this.dialogRef.close({ deleted: true, photo: this.photo });
         }
       }, error => {
         console.log(error);
@@ -101,7 +101,7 @@ export class PhotoDetailComponent implements OnInit {
       });
   }
   closeDialog() {
-    this.dialogRef.close(false);
+    this.dialogRef.close({});
   }
 
 }

@@ -12,6 +12,7 @@ export class Photo{
         status:number;
         created_at:Date;
         updated_at:Date;
+        prepend:boolean;
 }
 class PhotoPath{
         thumb:string;

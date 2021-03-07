@@ -21,8 +21,8 @@
     <app-password (IOnClose)="onPasswordClosed($event)" [albumInfo]="albumInfo"></app-password>
   </div>
   <div *ngIf="photos" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
-    <ngx-masonry [options]="ngxMasonaryOption" [updateLayout]='updateMasonryLayout' class="pl-1">
-      <div ngxMasonryItem *ngFor="let photo of photos; let i = index"  class="masonry-item grid-item grid-sizer">
+    <ngx-masonry [options]="ngxMasonaryOption" class="pl-1">
+      <div ngxMasonryItem *ngFor="let photo of photos; let i = index" [prepend]='photo.prepend'  class="masonry-item grid-item grid-sizer">
         <app-photo-card [photo]="photo" [albumName]='name'
           (OnDeleted)="OnPhotoDeleted($event)">
         </app-photo-card>

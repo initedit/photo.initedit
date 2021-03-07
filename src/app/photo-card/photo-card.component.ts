@@ -65,9 +65,11 @@ export class PhotoCardComponent implements OnInit {
       panelClass:'full-width-dialog'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result:PhotoDetailCloseData) => {
       if (result) {
-
+        if(result.deleted){
+          this.OnDeleted.emit(result.photo)
+        }
       }
     });
   }
@@ -75,4 +77,8 @@ export class PhotoCardComponent implements OnInit {
     this.service.downloadPhoto(this.photo);
   }
 
+}
+export class PhotoDetailCloseData{
+  deleted:boolean;
+  photo:Photo;
 }
