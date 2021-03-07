@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject, HostListener } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { PostMetaSingleResponse } from '../model/AlbumResponse';
 import { Photo } from '../model/Photo';
 import { PhotoService } from '../photo.service';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-photo-detail',
   templateUrl: './photo-detail.component.html',
@@ -22,7 +23,7 @@ export class PhotoDetailComponent implements OnInit {
   metaDetails: PostMetaSingleResponse
 
   constructor(public dialogRef: MatDialogRef<PhotoDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData, private service: PhotoService) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData, private service: PhotoService, private location: Location) {
     this.photo = data.photo;
     this.albumName = data.albumName;
     this.photoId = data.photoId;
@@ -53,6 +54,7 @@ export class PhotoDetailComponent implements OnInit {
     if (!this.photoId) {
       this.updateBackground();
       this.loadInfo();
+      this.location.go([this.albumName, this.photo.id].join('/'))
     } else {
       this.service.getPhotoById(this.albumName, (this.photoId as any)).subscribe(result => {
         this.photoId = null;
@@ -60,10 +62,13 @@ export class PhotoDetailComponent implements OnInit {
         this.updateCurrentPhoto(this.metaDetails.result.item)
       })
     }
+    this.dialogRef.beforeClosed().subscribe(() => {
+      this.location.go(this.albumName)
+    })
   }
 
   updateCurrentPhoto(photo: Photo) {
-
+    this.location.go([this.albumName, photo.id].join('/'))
     this.photo = photo;
     this.updateBackground();
     this.loadInfo();
