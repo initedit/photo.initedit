@@ -12,6 +12,7 @@ import { PhotoService } from '../photo.service';
 export class PhotoDetailComponent implements OnInit {
   photo: Photo;
   albumName: string;
+  photoId: string;
   fullImageStylesPlaceholder: any = {};
   fullImageStyles: any = {};
   editMessage: string;
@@ -24,12 +25,12 @@ export class PhotoDetailComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData, private service: PhotoService) {
     this.photo = data.photo;
     this.albumName = data.albumName;
+    this.photoId = data.photoId;
   }
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
     var key = event.key || event.keyCode;
-    console.log(event, key)
 
     if (key === 39 || key === 'ArrowRight') {
       if (this.metaDetails) {
@@ -49,12 +50,19 @@ export class PhotoDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.updateBackground();
-    this.loadInfo();
+    if (!this.photoId) {
+      this.updateBackground();
+      this.loadInfo();
+    } else {
+      this.service.getPhotoById(this.albumName, (this.photoId as any)).subscribe(result => {
+        this.photoId = null;
+        this.metaDetails = result;
+        this.updateCurrentPhoto(this.metaDetails.result.item)
+      })
+    }
   }
 
   updateCurrentPhoto(photo: Photo) {
-    console.log(photo);
 
     this.photo = photo;
     this.updateBackground();
@@ -108,4 +116,5 @@ export class PhotoDetailComponent implements OnInit {
 export class DialogData {
   photo: Photo
   albumName: string
+  photoId: string
 }

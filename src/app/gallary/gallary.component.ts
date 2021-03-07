@@ -8,6 +8,8 @@ import { PhotoBaseResponse } from '../model/PhotoBaseResponse';
 import { NgxMasonryComponent, NgxMasonryOptions } from 'ngx-masonry';
 import { AlbumInfoResponse } from '../model/AlbumResponse';
 import { PasswordComponent } from '../password/password.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PhotoDetailComponent } from '../photo-detail/photo-detail.component';
 
 @Component({
   selector: 'app-gallary',
@@ -52,11 +54,16 @@ export class GallaryComponent implements OnInit {
     // fitWidth:true,
   };
 
-  constructor(private route: ActivatedRoute, private photoService: PhotoService, private resolver: ComponentFactoryResolver) { }
+  constructor(private route: ActivatedRoute, private photoService: PhotoService, public dialog: MatDialog) { }
 
   ngOnInit() {
     this.name = this.route.snapshot.paramMap.get('name');
-    this.loadAlbumInfo(true);
+    let photoId = this.route.snapshot.paramMap.get('id');
+    if (photoId) {
+      this.showFullImage(photoId);
+    } else {
+      this.loadAlbumInfo(true);
+    }
   }
   @HostListener("document:paste", ["$event"])
   onPasteContent(event) {
@@ -68,6 +75,28 @@ export class GallaryComponent implements OnInit {
         this.uploadButtonComponent.addFilesForUpload([blob]);
       }
     }
+  }
+  showFullImage(photoId) {
+    const dialogRef = this.dialog.open(PhotoDetailComponent, {
+      data: {
+        photoId: photoId,
+        albumName: this.name,
+      },
+      width: '100%',
+      height: '100%',
+      panelClass: 'full-width-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        if (result.deleted) {
+          this.OnPhotoDeleted(result.photo)
+        }
+      }
+      if (this.photos.length == 0) {
+        this.loadAlbumInfo(true);
+      }
+    });
   }
 
   loadAlbumInfo(shouldRefresh: boolean) {
@@ -160,7 +189,7 @@ export class GallaryComponent implements OnInit {
   }
   uploadUpdate(result: Photo) {
     if (result) {
-      result.prepend=true;
+      result.prepend = true;
       this.photos.unshift(result);
       this.masonry.layout();
       if (this.isEmpty)

@@ -42,7 +42,7 @@ import { MaterialModule } from './material/material.module';
     NgxMasonryModule,
     InfiniteScrollModule,
     // AngularFontAwesomeModule,
-    MaterialModule,
+    MaterialModule.forRoot(),
     AppRoutingModule,
   ],
   providers: [],
