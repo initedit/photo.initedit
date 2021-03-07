@@ -61,7 +61,7 @@ export class PhotoCardComponent implements OnInit {
         albumName: this.albumName,
       },
       width:'100%',
-      height:'95%',
+      height:'100%',
       panelClass:'full-width-dialog'
     });
 

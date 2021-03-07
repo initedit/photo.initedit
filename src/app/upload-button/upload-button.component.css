@@ -19,7 +19,7 @@
         overflow: hidden;
         width: 30px;
         cursor: pointer;
-        
+
 }
 .upload-placeholder{
         position: fixed;
@@ -57,9 +57,9 @@
         cursor: pointer;
 }
 .upload-icon{
-        
+
         vertical-align: middle;
-        font-size: 2em;
+        /* font-size: 2em; */
         padding-right: 15px;
 }
 .round-upload{

@@ -1,5 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, HostListener } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { PostMetaSingleResponse } from '../model/AlbumResponse';
 import { Photo } from '../model/Photo';
 import { PhotoService } from '../photo.service';
 
@@ -17,6 +18,7 @@ export class PhotoDetailComponent implements OnInit {
   _showInfo: boolean = false;
   _isDeleting: boolean;
   _isEditing: boolean = false
+  metaDetails: PostMetaSingleResponse
 
   constructor(public dialogRef: MatDialogRef<PhotoDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData, private service: PhotoService) {
@@ -24,9 +26,50 @@ export class PhotoDetailComponent implements OnInit {
     this.albumName = data.albumName;
   }
 
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    var key = event.key || event.keyCode;
+    console.log(event, key)
+
+    if (key === 39 || key === 'ArrowRight') {
+      if (this.metaDetails) {
+        if (this.metaDetails.result.previous) {
+          this.updateCurrentPhoto(this.metaDetails.result.previous);
+        }
+      }
+    }
+
+    if (key === 37 || key === 'ArrowLeft') {
+      if (this.metaDetails) {
+        if (this.metaDetails.result.next) {
+          this.updateCurrentPhoto(this.metaDetails.result.next);
+        }
+      }
+    }
+  }
+
   ngOnInit(): void {
+    this.updateBackground();
+    this.loadInfo();
+  }
+
+  updateCurrentPhoto(photo: Photo) {
+    console.log(photo);
+
+    this.photo = photo;
+    this.updateBackground();
+    this.loadInfo();
+  }
+
+  updateBackground() {
     this.fullImageStylesPlaceholder.backgroundImage = "url('" + this.photo.path.thumb + "')";
     this.fullImageStyles.backgroundImage = "url('" + this.photo.path.big + "')";
+  }
+
+  loadInfo() {
+    this.service.getPhotoById(this.albumName, this.photo.id).subscribe(result => {
+      this.metaDetails = result;
+    })
   }
 
   downloadImage() {
@@ -57,7 +100,7 @@ export class PhotoDetailComponent implements OnInit {
         this.editMessage = response.message;
       });
   }
-  closeDialog(){
+  closeDialog() {
     this.dialogRef.close(false);
   }
 

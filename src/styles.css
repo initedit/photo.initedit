@@ -2,8 +2,10 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 .full-width-dialog{
-  max-width: 95vw !important;
+  max-width: 100vw !important;
 }
 .full-width-dialog .mat-dialog-container {
   background-color: #111;
+  padding: 0;
+
 }

@@ -6,7 +6,7 @@ import { TokenBaseResponse } from './model/TokenBaseResponse';
 import { SinglePhotoBaseResponse } from './model/SinglePhotoBaseResponse';
 import { Photo } from './model/Photo';
 import { environment } from 'src/environments/environment';
-import { AlbumInfoResponse } from './model/AlbumResponse';
+import { AlbumInfoResponse, PostMetaSingleResponse } from './model/AlbumResponse';
 @Injectable({
   providedIn: 'root'
 })
@@ -55,6 +55,10 @@ export class PhotoService {
       page: page,
     }
     return this.http.post<PhotoBaseResponse>(PhotoService.getAPIPath("/photo/get"), body, { headers: httpOptions.headers });
+  }
+  getPhotoById(name: string, id: Number): Observable<PostMetaSingleResponse> {
+    const httpOptions = PhotoService.getHeaders(name);
+    return this.http.get<PostMetaSingleResponse>(PhotoService.getAPIPath("/photo/"+id), { headers: httpOptions.headers });
   }
 
   validate(name: string, token: string): Observable<TokenBaseResponse> {
