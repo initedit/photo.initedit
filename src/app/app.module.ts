@@ -17,6 +17,8 @@ import { PasswordComponent } from './password/password.component';
 import { PhotoCardComponent } from './photo-card/photo-card.component';
 import { UploadButtonComponent } from './upload-button/upload-button.component';
 import { LoadingComponent } from './loading/loading.component';
+import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
+import { MaterialModule } from './material/material.module';
 
 
 
@@ -29,6 +31,7 @@ import { LoadingComponent } from './loading/loading.component';
     PhotoCardComponent,
     UploadButtonComponent,
     LoadingComponent,
+    PhotoDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +42,7 @@ import { LoadingComponent } from './loading/loading.component';
     NgxMasonryModule,
     InfiniteScrollModule,
     // AngularFontAwesomeModule,
+    MaterialModule,
     AppRoutingModule,
   ],
   providers: [],

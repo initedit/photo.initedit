@@ -12,10 +12,7 @@ import { PhotoUpload } from '../model/PhotoUpload';
 @Component({
   selector: 'app-upload-button',
   templateUrl: './upload-button.component.html',
-  styleUrls: ['./upload-button.component.css',
-    "../../../node_modules/font-awesome/css/font-awesome.css",
-    '../../../node_modules/animate.css/animate.css'
-  ]
+  styleUrls: ['./upload-button.component.css']
 })
 export class UploadButtonComponent implements OnInit, IPhotoUploadLifeCycle {
 

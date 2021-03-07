@@ -14,9 +14,6 @@ import { PasswordComponent } from '../password/password.component';
   templateUrl: './gallary.component.html',
   styleUrls: [
     './gallary.component.css',
-    '../../../node_modules/ng-masonry-grid/ng-masonry-grid.css',
-    "../../../node_modules/font-awesome/css/font-awesome.css",
-    '../../../node_modules/animate.css/animate.css'
   ]
 })
 export class GallaryComponent implements OnInit {

@@ -1,1 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.full-width-dialog{
+  max-width: 95vw !important;
+}
+.full-width-dialog .mat-dialog-container {
+  background-color: #111;
+}
