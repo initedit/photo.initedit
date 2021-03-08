@@ -5,6 +5,8 @@ import { PostMetaSingleResponse } from '../model/AlbumResponse';
 import { Photo } from '../model/Photo';
 import { PhotoService } from '../photo.service';
 import { Location } from '@angular/common';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogModel } from '../model/ConfirmDialogModel';
 @Component({
   selector: 'app-photo-detail',
   templateUrl: './photo-detail.component.html',
@@ -23,7 +25,7 @@ export class PhotoDetailComponent implements OnInit {
   metaDetails: PostMetaSingleResponse
 
   constructor(public dialogRef: MatDialogRef<PhotoDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData, private service: PhotoService, private location: Location) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData, private service: PhotoService, private location: Location, private dialog: MatDialog) {
     this.photo = data.photo;
     this.albumName = data.albumName;
     this.photoId = data.photoId;
@@ -89,17 +91,28 @@ export class PhotoDetailComponent implements OnInit {
     this.service.downloadPhoto(this.photo);
   }
   deletePhoto() {
-    this._isDeleting = true;
-    this.service.deletePhoto(this.albumName, this.photo)
-      .subscribe(response => {
-        if (response.code == 200) {
-          this.dialogRef.close({ deleted: true, photo: this.photo });
-        }
-      }, error => {
-        console.log(error);
-      }, () => {
-        this._isDeleting = false;
-      });
+    let confirmRef = this.dialog.open(ConfirmDialogComponent, {
+      data: new ConfirmDialogModel('Confirm?', 'Are you sure you want to delete this photo?'),
+    });
+    confirmRef.afterClosed().subscribe(isClosed => {
+      if (isClosed) {
+        this._isDeleting = true;
+        this.service.deletePhoto(this.albumName, this.photo)
+          .subscribe(response => {
+            if (response.code == 200) {
+              this.dialogRef.close({ deleted: true, photo: this.photo });
+            }
+          }, error => {
+            console.log(error);
+          }, () => {
+            this._isDeleting = false;
+          });
+      }else{
+        //TODO:: Show cancled deleting message
+      }
+    })
+
+
   }
   editPhotoCard() {
     this._isEditing = true;

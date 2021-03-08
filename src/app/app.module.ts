@@ -19,6 +19,7 @@ import { UploadButtonComponent } from './upload-button/upload-button.component';
 import { LoadingComponent } from './loading/loading.component';
 import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
 import { MaterialModule } from './material/material.module';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 
 
@@ -32,6 +33,7 @@ import { MaterialModule } from './material/material.module';
     UploadButtonComponent,
     LoadingComponent,
     PhotoDetailComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
