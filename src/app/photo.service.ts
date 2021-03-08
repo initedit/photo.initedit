@@ -58,7 +58,7 @@ export class PhotoService {
   }
   getPhotoById(name: string, id: Number): Observable<PostMetaSingleResponse> {
     const httpOptions = PhotoService.getHeaders(name);
-    return this.http.get<PostMetaSingleResponse>(PhotoService.getAPIPath("/photo/"+id), { headers: httpOptions.headers });
+    return this.http.get<PostMetaSingleResponse>(PhotoService.getAPIPath("/photo/" + id), { headers: httpOptions.headers });
   }
 
   validate(name: string, token: string): Observable<TokenBaseResponse> {
@@ -87,7 +87,8 @@ export class PhotoService {
     const body = {
       name
     }
-    return this.http.post<AlbumInfoResponse>(PhotoService.getAPIPath("/account/info"), body);
+    const httpOptions = PhotoService.getHeaders(name);
+    return this.http.post<AlbumInfoResponse>(PhotoService.getAPIPath("/account/info"), body, { headers: httpOptions.headers });
   }
   create(name: string, token: string, type: string): Observable<TokenBaseResponse> {
     const body = {

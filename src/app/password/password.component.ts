@@ -1,10 +1,12 @@
-import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output, Inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { PhotoService } from '../photo.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TokenBaseResponse } from '../model/TokenBaseResponse';
 import passwordHash from '../../../node_modules/password-hash';
 import { AlbumInfoResponse } from '../model/AlbumResponse';
+import { ToastService } from '../toast.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 //declare var require:any;
 
 @Component({
@@ -14,7 +16,7 @@ import { AlbumInfoResponse } from '../model/AlbumResponse';
 })
 export class PasswordComponent implements OnInit {
   @Output() IOnClose = new EventEmitter<boolean>();
-  @Input() albumInfo: AlbumInfoResponse
+  albumInfo: AlbumInfoResponse
   password: string;
   name: string;
   isPasswordVisible: boolean = true;
@@ -22,11 +24,12 @@ export class PasswordComponent implements OnInit {
   _passwordType: string = "password";
   selectedType: string = "2";
   _message: string = "";
-  _initAuth: boolean = true;
-  constructor(private _route: ActivatedRoute, private _service: PhotoService) { }
+  constructor(public dialogRef: MatDialogRef<PasswordComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any, private _service: PhotoService, private toastService: ToastService) { }
 
   ngOnInit() {
-    this.name = this._route.snapshot.url[0].path;
+    this.name = this.data.albumName;
+    this.albumInfo = this.data.albumInfo
     this.init();
 
   }
@@ -34,7 +37,6 @@ export class PasswordComponent implements OnInit {
 
   init() {
     if (this.albumInfo) {
-      console.log(this.albumInfo);
 
       if (this.albumInfo.code === 404) {
         this.isCreated = false;
@@ -60,26 +62,28 @@ export class PasswordComponent implements OnInit {
   }
 
   hideModel(isSuccess: boolean) {
-    this.IOnClose.emit(isSuccess);
+    this.dialogRef.close(false);
   }
   authenticate() {
-    let name = this._route.snapshot.url[0].path;
+
     let token = this.getPasswordFromUI();
-    this._service.validate(name, token)
+    if (token.length == 0) {
+      return;
+    }
+    this._service.validate(this.name, token)
       .subscribe(response => {
         if (response.code == 200) {
-          this.saveToken(name, response);
+          this.saveToken(this.name, response);
+          this.dialogRef.close(true);
         } else if (response.code == 100) {
-          if (this._initAuth == true) {
-            this._initAuth = false;
-            return;
-          }
-          this._message = response.message;
+          this.toastService.toast(response.message);
+        } else {
+          this.toastService.toast(response.message);
         }
       })
   }
   create() {
-    let name = this._route.snapshot.url[0].path;
+    let name = this.name;
     let token = this.getPasswordFromUI();
     let type = this.selectedType;
     this._service.create(name, token, type)

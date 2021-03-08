@@ -20,7 +20,7 @@ import { PhotoDetailComponent } from '../photo-detail/photo-detail.component';
 })
 export class GallaryComponent implements OnInit {
   name: string;
-  showPasswordScreen: boolean = false;
+  // showPasswordScreen: boolean = false;
   photos: Photo[] = [];
   isEmpty: boolean = false;
   _page: number = 1;
@@ -36,8 +36,6 @@ export class GallaryComponent implements OnInit {
   @ViewChild(UploadButtonComponent)
   private uploadButtonComponent: UploadButtonComponent;
 
-  @ViewChild(PasswordComponent)
-  private passwordComoponent: PasswordComponent;
   isError: boolean = false;
   errorMessage: any;
   @ViewChild(NgxMasonryComponent)
@@ -126,6 +124,8 @@ export class GallaryComponent implements OnInit {
         this.isCreated = true;
       }
     }
+    console.log(this.albumInfo, this.isCreated, this.canEdit, this.isLocked);
+
   }
 
   refreshFeed() {
@@ -136,12 +136,31 @@ export class GallaryComponent implements OnInit {
 
   handleLocking() {
     if (this.photoResponse) {
-      if (this.showPasswordScreen) {
-        this.showPasswordScreen = false;
-      } else {
-        this.showPasswordScreen = true;
-      }
+      //TODO:: Check when to show Password Dialog
+      this.openPasswordDialog();
     }
+  }
+
+  openPasswordDialog() {
+    let passwordDialog = this.dialog.open(PasswordComponent, {
+      data: {
+        albumName: this.name,
+        albumInfo: this.albumInfo,
+      },
+      position: {
+        top: '20px'
+      },
+      minWidth: 300
+    });
+
+    passwordDialog.afterClosed().subscribe(isLoggedIn => {
+      //TODO:: Logged in user(Refresh Screen or do something)
+      if (isLoggedIn) {
+        this._isAllPhotoLoaded = false;
+        this.calculateFlags();
+        this.refreshFeed();
+      }
+    })
   }
 
   load() {
@@ -153,12 +172,10 @@ export class GallaryComponent implements OnInit {
         this.isError = false;
         this.photoResponse = photoResponse;
         if (photoResponse.code == 401) {
-          this.showPasswordScreen = true;
-
+          this.openPasswordDialog();
         } else if (photoResponse.code == 404) {
-          this.showPasswordScreen = false;
+
         } else {
-          this.showPasswordScreen = false;
           this.photos = this.photos.concat(photoResponse.result);
 
           if (photoResponse.total <= this.photos.length) {
@@ -181,10 +198,14 @@ export class GallaryComponent implements OnInit {
   lockCurrentAlbum() {
     this.photoService.removeActiveToken();
     this.calculateFlags();
+    if (this.albumInfo && this.albumInfo.type == 'Private') {
+      this.photos = [];
+      this.masonry.reloadItems();
+      this.openPasswordDialog();
+    }
   }
 
   onPasswordClosed(isClosed: boolean) {
-    this.showPasswordScreen = false;
     this.loadAlbumInfo(false);
   }
   uploadUpdate(result: Photo) {

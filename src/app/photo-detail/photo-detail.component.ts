@@ -1,12 +1,12 @@
 import { Component, OnInit, Inject, HostListener } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { PostMetaSingleResponse } from '../model/AlbumResponse';
 import { Photo } from '../model/Photo';
 import { PhotoService } from '../photo.service';
 import { Location } from '@angular/common';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogModel } from '../model/ConfirmDialogModel';
+import { ToastService } from '../toast.service';
 @Component({
   selector: 'app-photo-detail',
   templateUrl: './photo-detail.component.html',
@@ -18,14 +18,13 @@ export class PhotoDetailComponent implements OnInit {
   photoId: string;
   fullImageStylesPlaceholder: any = {};
   fullImageStyles: any = {};
-  editMessage: string;
   _showInfo: boolean = false;
   _isDeleting: boolean;
   _isEditing: boolean = false
   metaDetails: PostMetaSingleResponse
 
   constructor(public dialogRef: MatDialogRef<PhotoDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData, private service: PhotoService, private location: Location, private dialog: MatDialog) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData, private service: PhotoService, private location: Location, private dialog: MatDialog, private toastService: ToastService) {
     this.photo = data.photo;
     this.albumName = data.albumName;
     this.photoId = data.photoId;
@@ -101,14 +100,15 @@ export class PhotoDetailComponent implements OnInit {
           .subscribe(response => {
             if (response.code == 200) {
               this.dialogRef.close({ deleted: true, photo: this.photo });
+              this.toastService.toast('Deleted');
+            } else {
+              this.toastService.toast(response.message);
             }
           }, error => {
-            console.log(error);
+            this.toastService.toast('Something went wrong!');
           }, () => {
             this._isDeleting = false;
           });
-      }else{
-        //TODO:: Show cancled deleting message
       }
     })
 
@@ -120,10 +120,7 @@ export class PhotoDetailComponent implements OnInit {
   updatePhoto() {
     this.service.update(this.albumName, this.photo.id.toString(), this.photo.name, this.photo.description, this.photo.tags, this.photo.extra)
       .subscribe(response => {
-        if (response.code == 200) {
-
-        }
-        this.editMessage = response.message;
+        this.toastService.toast(response.message);
       });
   }
   closeDialog() {

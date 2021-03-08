@@ -25,7 +25,6 @@
 
   <div class="edit" *ngIf="_isEditing">
     <div class="edit-right animated faster" [class.show]="_isEditing">
-      <div class="alert alert-warning mt-3" [class.slideInUp]="editMessage" *ngIf="editMessage">{{editMessage}}</div>
       <div class="mt-3">
         <label class="form-label">Name</label>
         <input type="text" [(ngModel)]="photo.name" placeholder="type name" class="form-control" />

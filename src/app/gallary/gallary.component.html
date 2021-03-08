@@ -17,9 +17,6 @@
     <span class="album-name"> {{name|uppercase}}</span>
   </h2>
   <app-loading *ngIf="_loading"></app-loading>
-  <div *ngIf="showPasswordScreen">
-    <app-password (IOnClose)="onPasswordClosed($event)" [albumInfo]="albumInfo"></app-password>
-  </div>
   <div *ngIf="photos" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
     <ngx-masonry [options]="ngxMasonaryOption" class="pl-1">
       <div ngxMasonryItem *ngFor="let photo of photos; let i = index" [prepend]='photo.prepend'  class="masonry-item grid-item grid-sizer">
