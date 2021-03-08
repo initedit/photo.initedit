@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, HostListener } from '@angular/core';
+import { Component, OnInit, Inject, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PostMetaSingleResponse } from '../model/AlbumResponse';
 import { Photo } from '../model/Photo';
@@ -114,8 +114,22 @@ export class PhotoDetailComponent implements OnInit {
 
 
   }
+  @ViewChild('container')
+  containerElement: ElementRef<HTMLDivElement>
   editPhotoCard() {
     this._isEditing = true;
+    setTimeout(() => {
+      this.containerElement.nativeElement.scrollBy({
+        top: 100000
+      });
+    }, 0)
+
+  }
+  infoPhotoCard() {
+    this._showInfo = !this._showInfo
+    this.containerElement.nativeElement.scrollBy({
+      top: this.containerElement.nativeElement.scrollHeight
+    });
   }
   updatePhoto() {
     this.service.update(this.albumName, this.photo.id.toString(), this.photo.name, this.photo.description, this.photo.tags, this.photo.extra)
