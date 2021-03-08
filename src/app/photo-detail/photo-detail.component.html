@@ -16,10 +16,14 @@
     <div class="full-image" [ngStyle]="fullImageStyles">
 
     </div>
-    <i class="fa fa-nav fa-chevron-left" *ngIf="this.metaDetails && this.metaDetails.result.next"
+
+    <i class="fa fa-alt-big fa-nav fa-chevron-left" *ngIf="this.metaDetails && this.metaDetails.result.next"></i>
+    <i class="fa fa-alt-small fa-nav fa-chevron-left" *ngIf="this.metaDetails && this.metaDetails.result.next"
       (click)="moveToNext()"></i>
-    <i class="fa fa-nav fa-chevron-right" *ngIf="this.metaDetails && this.metaDetails.result.previous"
+    <i class="fa fa-alt-big  fa-nav fa-chevron-right" *ngIf="this.metaDetails && this.metaDetails.result.previous"></i>
+    <i class="fa fa-alt-small fa-nav fa-chevron-right" *ngIf="this.metaDetails && this.metaDetails.result.previous"
       (click)="moveToPrevious()"></i>
+
   </div>
   <div class="full-image-text" *ngIf="photo && _isEditing==false">
     <div class="mb-1">{{photo.name}}</div>

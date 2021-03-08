@@ -85,18 +85,37 @@ textarea {
   margin-top: 4px;
 }
 
-.fa-nav{
+.fa-nav {
   position: absolute;
   left: 0;
   top: 50%;
   padding: 12px;
   cursor: pointer;
-  color: #DDD;
+  color: #FFF;
 }
-.fa-nav.fa-chevron-right{
+
+.fa-alt-big {
+  font-size: 1.2em;
+  color: #111;
+  margin-top: -0.1em;
+
+}
+.fa-alt-small.fa-chevron-left {
+  margin-left: 0.2em;
+}
+.fa-alt-small.fa-chevron-right {
+  margin-right: 0.2em;
+}
+.fa-nav.fa-chevron-right {
   left: inherit;
   right: 0;
 }
+.fa-alt-big.fa-chevron-right {
+  /* margin-left: 0;
+  padding-right: -0.1em; */
+}
+
+
 @media (max-width: 767px) {
   .edit-right {
     width: 100%;
