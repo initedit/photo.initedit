@@ -35,21 +35,15 @@ export class PhotoDetailComponent implements OnInit {
     var key = event.key || event.keyCode;
 
     if (key === 39 || key === 'ArrowRight') {
-      if (this.metaDetails) {
-        if (this.metaDetails.result.previous) {
-          this.updateCurrentPhoto(this.metaDetails.result.previous);
-        }
-      }
+      this.moveToPrevious();
     }
 
     if (key === 37 || key === 'ArrowLeft') {
-      if (this.metaDetails) {
-        if (this.metaDetails.result.next) {
-          this.updateCurrentPhoto(this.metaDetails.result.next);
-        }
-      }
+      this.moveToNext();
     }
   }
+
+
 
   ngOnInit(): void {
     if (!this.photoId) {
@@ -66,6 +60,22 @@ export class PhotoDetailComponent implements OnInit {
     this.dialogRef.beforeClosed().subscribe(() => {
       this.location.go(this.albumName)
     })
+  }
+
+  moveToPrevious() {
+    if (this.metaDetails) {
+      if (this.metaDetails.result.previous) {
+        this.updateCurrentPhoto(this.metaDetails.result.previous);
+      }
+    }
+  }
+
+  moveToNext() {
+    if (this.metaDetails) {
+      if (this.metaDetails.result.next) {
+        this.updateCurrentPhoto(this.metaDetails.result.next);
+      }
+    }
   }
 
   updateCurrentPhoto(photo: Photo) {

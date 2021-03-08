@@ -1,4 +1,4 @@
-<div class="full-screen"  #container>
+<div class="full-screen" #container>
   <div class="close-btn">
     <i class="fa fa-x fa-arrow-left" (click)="closeDialog()"></i>
   </div>
@@ -16,6 +16,10 @@
     <div class="full-image" [ngStyle]="fullImageStyles">
 
     </div>
+    <i class="fa fa-nav fa-chevron-left" *ngIf="this.metaDetails && this.metaDetails.result.next"
+      (click)="moveToNext()"></i>
+    <i class="fa fa-nav fa-chevron-right" *ngIf="this.metaDetails && this.metaDetails.result.previous"
+      (click)="moveToPrevious()"></i>
   </div>
   <div class="full-image-text" *ngIf="photo && _isEditing==false">
     <div class="mb-1">{{photo.name}}</div>
@@ -29,7 +33,7 @@
     </div>
   </div>
 
-  <div class="edit"  *ngIf="_isEditing">
+  <div class="edit" *ngIf="_isEditing">
     <div class="edit-right" [class.show]="_isEditing">
       <div class="mt-3">
         <label class="form-label">Name</label>
