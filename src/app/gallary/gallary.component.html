@@ -9,7 +9,7 @@
     <i class="fa fa-unlock app-lock-btn" *ngIf='isCreated==false &&  isLocked==false' (click)="handleLocking()"></i>
 
     <app-upload-button class="upload-button" [albumName]='name' (ICallback)="uploadUpdate($event)"
-      (IMessage)="sendMessage($event)">
+      (IMessage)="sendMessage($event)" [albumInfo]="albumInfo">
     </app-upload-button>
     <div class="error-message bg-alert" [hidden]="!errorMessage">{{errorMessage}}</div>
   </div>

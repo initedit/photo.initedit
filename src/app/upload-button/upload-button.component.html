@@ -11,7 +11,7 @@
     <div *ngFor="let item of uploadItems" class="">
       <div class="upload-item text-truncate">
        <span class="percentage-visual" [style.width]="item.progress + '%'"></span>
-       <div class="name">{{item.name}}</div> 
+       <div class="name">{{item.name}}</div>
         <span class="percentage">
           {{item.progress/100 | percent}}
         </span>
@@ -19,7 +19,7 @@
     </div>
   </div>
 </div>
-<app-password *ngIf="showPasswordDialog" (IOnClose)="onPasswordClosed($event)"></app-password>
+<!-- <app-password *ngIf="showPasswordDialog" (IOnClose)="onPasswordClosed($event)"></app-password> -->
 <div class="upload-placeholder" *ngIf="dropzoneHovered">
   <div class="drop-message animated faster bg-primary" [class.slideInUp]="dropzoneHovered">
     Drop your files to upload

@@ -1,13 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PhotoService } from '../photo.service';
 import { ActivatedRoute } from '@angular/router';
 import { Photo } from '../model/Photo';
 import { PhotoUploadService } from '../photo-upload.service';
-import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { SinglePhotoBaseResponse } from '../model/SinglePhotoBaseResponse';
 import { IPhotoUploadLifeCycle } from '../model/iphoto-upload-life-cycle';
 import { PhotoUpload } from '../model/PhotoUpload';
+import { PasswordComponent } from '../password/password.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AlbumInfoResponse } from '../model/AlbumResponse';
 
 @Component({
   selector: 'app-upload-button',
@@ -23,14 +24,16 @@ export class UploadButtonComponent implements OnInit, IPhotoUploadLifeCycle {
   _lastEvnt: any;
   dropzoneHovered: boolean = false;
   @Input() albumName: string;
+  @Input() albumInfo: AlbumInfoResponse;
   @Output() ICallback = new EventEmitter<Photo>();
   @Output() IMessage = new EventEmitter<string>();
   _uploadRetry: PhotoUpload;
   currentAlbumName: string;
   isUploading: boolean = false;
   uploadItems: Array<PhotoUpload> = [];
+  passwordDialog: MatDialogRef<PasswordComponent, any> = null;
 
-  constructor(private _route: ActivatedRoute, private _service: PhotoService, private _uploadService: PhotoUploadService) { }
+  constructor(private _route: ActivatedRoute, private _service: PhotoService, private _uploadService: PhotoUploadService, private dialog: MatDialog) { }
   ngOnInit() {
     this._uploadService.setCallback(this);
     this.currentAlbumName = this._route.snapshot.url[0].path;
@@ -47,7 +50,7 @@ export class UploadButtonComponent implements OnInit, IPhotoUploadLifeCycle {
       let elPhoto = evnt.target;
       this.addFilesForUpload(elPhoto.files);
     } else {
-      this.showPasswordDialog = true;
+      this.openPasswordDialog();
     }
   }
 
@@ -67,28 +70,9 @@ export class UploadButtonComponent implements OnInit, IPhotoUploadLifeCycle {
     }
   }
 
-  handleSuccessUpload(response: SinglePhotoBaseResponse) {
-
-  }
-
-  onPasswordClosed(isSuccess: boolean) {
-    setTimeout(() => { this.showPasswordDialog = false }, 0);
-
-    if (isSuccess) {
-      if (this._uploadRetry) {
-        this._uploadService.retry(this._uploadRetry)
-        this._uploadRetry = null;
-
-      } else {
-        this.uploadToServer(this._lastEvnt);
-
-      }
-    }
-  }
-
   authFailed(item: PhotoUpload) {
     if (item.albumName == this.currentAlbumName) {
-      this.showPasswordDialog = true;
+      this.openPasswordDialog();
       this._uploadRetry = item;
     }
   }
@@ -100,6 +84,33 @@ export class UploadButtonComponent implements OnInit, IPhotoUploadLifeCycle {
     this.uploadItems = this._uploadService.GetUploadList();
     if (item.IS_ERROR) {
       this.IMessage.emit(item.errorMessage);
+    }
+  }
+
+  openPasswordDialog() {
+    if (this.passwordDialog == null) {
+      this.passwordDialog = this.dialog.open(PasswordComponent, {
+        data: {
+          albumName: this.albumName,
+          albumInfo: this.albumInfo,
+        },
+        position: {
+          top: '20px'
+        },
+        minWidth: 300
+      });
+
+      this.passwordDialog.afterClosed().subscribe(isLoggedIn => {
+        this.passwordDialog = null
+        if (isLoggedIn) {
+          if (this._uploadRetry) {
+            this._uploadService.retry(this._uploadRetry)
+            this._uploadRetry = null;
+          } else {
+            this.uploadToServer(this._lastEvnt);
+          }
+        }
+      });
     }
   }
 
